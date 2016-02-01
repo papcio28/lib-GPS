@@ -4,4 +4,5 @@ import android.location.Location;
 
 public interface LocationProvider {
     public Location getLastLocation();
+    public void startTracking();
 }
