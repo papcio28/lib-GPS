@@ -1,10 +1,12 @@
-package pl.urban.android.lib.gpsmodule;
+package pl.urban.android.lib.gpsmodule.service;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
+
+import pl.urban.android.lib.gpsmodule.AbstractLocationProvider;
 
 public abstract class LocationPingIntentService extends IntentService {
     private static final int _LOCATION_PING_REQUEST_CODE = 1;
@@ -15,7 +17,7 @@ public abstract class LocationPingIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final LocationProvider locationProvider = getLocationProvider();
+        final AbstractLocationProvider locationProvider = getLocationProvider();
         handleLocation(locationProvider.getLastLocation());
 
         PendingIntent pendingIntent = PendingIntent.getService(this, _LOCATION_PING_REQUEST_CODE,
@@ -28,7 +30,7 @@ public abstract class LocationPingIntentService extends IntentService {
     /**
      * Provides LocationProvider implementation
      */
-    protected abstract LocationProvider getLocationProvider();
+    protected abstract AbstractLocationProvider getLocationProvider();
 
     /**
      * Provides next service fire timestamp for AlarmManager
