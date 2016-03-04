@@ -36,6 +36,17 @@ public class GooglePlayLocationProvider extends AbstractLocationProvider impleme
     }
 
     @Override
+    public Location getLastLocation() {
+        if (mApiClient.isConnected()) {
+            final Location googleLocation = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
+            if (googleLocation != null) {
+                setLastLocation(googleLocation);
+            }
+        }
+        return super.getLastLocation();
+    }
+
+    @Override
     public void onConnected(Bundle bundle) throws SecurityException {
         Log.d(TAG, "onConnected");
         setLastLocation(LocationServices.FusedLocationApi.getLastLocation(mApiClient));
@@ -53,14 +64,12 @@ public class GooglePlayLocationProvider extends AbstractLocationProvider impleme
 
     @Override
     public GooglePlayLocationRequest startTracking(LocationRequestListener locationRequestListener) {
-        final GooglePlayLocationRequest googlePlayLocationRequest = new GooglePlayLocationRequest(mApiClient, locationRequestListener);
-        return googlePlayLocationRequest;
+        return new GooglePlayLocationRequest(mApiClient, locationRequestListener);
     }
 
     @Override
     public GooglePlayLocationRequest startTracking(LocationRequestListener locationRequestListener, int timeout) {
-        final GooglePlayLocationRequest googlePlayLocationRequest = new GooglePlayLocationRequest(mApiClient, locationRequestListener, timeout);
-        return googlePlayLocationRequest;
+        return new GooglePlayLocationRequest(mApiClient, locationRequestListener, timeout);
     }
 
     public class GooglePlayLocationRequest extends AbstractLocationRequest implements LocationListener {

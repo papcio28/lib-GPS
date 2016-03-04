@@ -2,7 +2,6 @@ package pl.urban.android.lib.gpsmodule;
 
 import android.location.Location;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 
 public abstract class AbstractLocationProvider {
@@ -25,7 +24,7 @@ public abstract class AbstractLocationProvider {
         private final Integer mTimeout;
         private LocationRequestType mRequestType;
 
-        private final Runnable mStopRunnable = () -> stopTracking();
+        private final Runnable mStopRunnable = this::stopTracking;
         private Handler mTimingHandler;
 
         public AbstractLocationRequest(@NonNull final LocationRequestListener listener) {
@@ -50,7 +49,7 @@ public abstract class AbstractLocationProvider {
         public void startTracking() {
             handleStartTracking();
             if (getRequestType() == LocationRequestType.STOP_AFTER_TIME) {
-                mTimingHandler = new Handler(Looper.getMainLooper());
+                mTimingHandler = new Handler();
                 mTimingHandler.postDelayed(mStopRunnable, mTimeout);
             }
         }
