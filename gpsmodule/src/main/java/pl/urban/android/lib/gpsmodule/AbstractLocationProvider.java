@@ -2,10 +2,18 @@ package pl.urban.android.lib.gpsmodule;
 
 import android.location.Location;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Process;
 import android.support.annotation.NonNull;
 
 public abstract class AbstractLocationProvider {
     private Location mLastLocation;
+    private HandlerThread mTimingThread;
+
+    public AbstractLocationProvider() {
+        this.mTimingThread = new HandlerThread("LocationProviderTiming", Process.THREAD_PRIORITY_LOWEST);
+        this.mTimingThread.start();
+    }
 
     public Location getLastLocation() {
         return mLastLocation;
@@ -49,7 +57,7 @@ public abstract class AbstractLocationProvider {
         public void startTracking() {
             handleStartTracking();
             if (getRequestType() == LocationRequestType.STOP_AFTER_TIME) {
-                mTimingHandler = new Handler();
+                mTimingHandler = new Handler(mTimingThread.getLooper());
                 mTimingHandler.postDelayed(mStopRunnable, mTimeout);
             }
         }
